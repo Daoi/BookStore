@@ -1,0 +1,10 @@
+C:\Users\Mrah\source\repos\BookStore\BookStore\bin\Release\BookStore.exe.config
+C:\Users\Mrah\source\repos\BookStore\BookStore\bin\Release\BookStore.exe
+C:\Users\Mrah\source\repos\BookStore\BookStore\bin\Release\BookStore.pdb
+C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Release\BookStore.csprojAssemblyReference.cache
+C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Release\BookStore.frmUserIdPrompt.resources
+C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Release\BookStore.Properties.Resources.resources
+C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Release\BookStore.csproj.GenerateResource.cache
+C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Release\BookStore.csproj.CoreCompileInputs.cache
+C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Release\BookStore.exe
+C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Release\BookStore.pdb
