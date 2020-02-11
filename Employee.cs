@@ -3,15 +3,16 @@ using System.Collections.Generic;
 
 namespace BookStore
 {
-    internal class Employee
+    public class Employee
     {
         private int employeeId;
         private string employeePin;
         private string employeeName;
         private decimal AnnualPay;
         private DateTime lastAccess;
+        private DateTime startDate;
         
-        public Employee(int id, string pin, string name, decimal salary)
+        public Employee(int id, string pin, string name, decimal salary, DateTime startDate)
         {
             //If value already in database, return invalid 
             employeeId = id;
@@ -22,7 +23,7 @@ namespace BookStore
 
             AnnualPay = salary;
 
-            lastAccess = DateTime.Today;
+            this.startDate = startDate;
 
         }
         public Employee()
@@ -56,8 +57,7 @@ namespace BookStore
                 return null;
             }
 
-            Employee newEmp = new Employee(Convert.ToInt32(employeeInfo[0]), employeeInfo[1], employeeInfo[2], Convert.ToDecimal(employeeInfo[3]));
-            newEmp.LogAccess();
+            Employee newEmp = new Employee(Convert.ToInt32(employeeInfo[0]), employeeInfo[1], employeeInfo[2], Convert.ToDecimal(employeeInfo[3]), DateTime.Parse(employeeInfo[4]));
             return newEmp;
             
 
@@ -71,6 +71,11 @@ namespace BookStore
         public string getPin()
         {
             return employeePin;
+        }
+
+        public string getName()
+        {
+            return employeeName;
         }
 
     }

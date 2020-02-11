@@ -1,13 +1,16 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace BookStore
 {
+
     public partial class frmUserIdPrompt : Form
     {
-        EmployeeList employeeInfo;
+        EmployeeList employeeInfoDB = new EmployeeList();
         Employee currentUser;
+        const string employeeFile = "employeeList.txt";
 
         public frmUserIdPrompt()
         {
@@ -17,8 +20,31 @@ namespace BookStore
         //Load employee data on form load.
         private void frmUserIdPrompt_Load(object sender, EventArgs e)
         {
-            employeeInfo = new EmployeeList();
+            string filepath = Path.GetFullPath(employeeFile);
+            Employee currentEmployee;
+            StreamReader employeeInfoFile = new StreamReader(filepath);
+            //Can condense file reading into a class
+            //Check for what type of file it is using if statement, read first line
+            //If it matches regex for ID it's an employee file
+            //If it matches regex for ISBN it's a bookfile
+            string line;
+            while ((line = employeeInfoFile.ReadLine()) != null)
+            {
+                string[] employeeInfo = line.Split('|');
+                //User ID Validation(Doesn't exist, is in right format)
+                if (Regex.IsMatch(employeeInfo[0], @"^[0-9]{5}$") && !employeeInfoDB.DoesIdExist(employeeInfo[0]))
+                {
 
+                    currentEmployee = Employee.CreateAndPopulateEmployeeObject(employeeInfo, employeeInfoDB);
+                    employeeInfoDB.AddEmployee(currentEmployee);
+
+                }
+                else//What to do if we have invalid entry in txt file/data corruption
+                {
+
+                }
+            }
+            employeeInfoFile.Close();
         }
         
         //Check for correct user name
@@ -33,13 +59,14 @@ namespace BookStore
                 MessageBox.Show("Please enter your 5 digit User ID", "Invalid ID");
                 txtUserID.Focus();
             }
-            else if(employeeInfo.DoesIdExist(txtUserID.Text))
+            else if(employeeInfoDB.DoesIdExist(txtUserID.Text))
             {
-                currentUser = employeeInfo.LookUpEmployee(id);
+                currentUser = employeeInfoDB.LookUpEmployee(id);
                 pnlUserLogin.Enabled = false;
                 pnlUserLogin.Visible = false;
                 pnlPasswordScreen.Enabled = true;
                 pnlPasswordScreen.Visible = true;
+                AcceptButton = btnPasswordEntry;
                 txtPassword.Focus();
             }
             
@@ -60,21 +87,27 @@ namespace BookStore
                 return;
             }
 
-            if ((!Regex.IsMatch(txtPassword.Text, @"^[0-9]{4}$")))
+            if ((!Regex.IsMatch(txtPassword.Text, @"^[0-9]{4}$"))) //Bad format
             {
                 MessageBox.Show("Please enter your 4 digit pin", "Invalid Pin");
                 txtPassword.Focus();
             }
-            else if (currentUser.getPin() == txtPassword.Text)
+            else if (currentUser.getPin() == txtPassword.Text) //Succesful Login
             {
                 MessageBox.Show("Pin entered correctly", "Correct pin");
+
+                frmMain mainStorePage = new frmMain(currentUser, employeeInfoDB);
+                this.Hide();
+                mainStorePage.Show();
             }
             else
             {
-                MessageBox.Show("Pin entered incorrectly", "Incorrect pin");
+                MessageBox.Show("Pin entered incorrectly", "Incorrect pin"); //Bad pin
+                txtPassword.Focus();
                 attempts++;
             }
 
         }
+
     }
 }

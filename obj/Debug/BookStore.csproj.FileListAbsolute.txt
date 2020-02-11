@@ -8,3 +8,4 @@ C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Debug\BookStore.csproj.Genera
 C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Debug\BookStore.csproj.CoreCompileInputs.cache
 C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Debug\BookStore.exe
 C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Debug\BookStore.pdb
+C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Debug\BookStore.frmMain.resources

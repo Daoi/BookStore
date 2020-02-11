@@ -31,9 +31,9 @@
             this.btnUserIDEntry = new System.Windows.Forms.Button();
             this.txtUserID = new System.Windows.Forms.TextBox();
             this.pnlPasswordScreen = new System.Windows.Forms.Panel();
-            this.txtPassword = new System.Windows.Forms.TextBox();
-            this.btnPasswordEntry = new System.Windows.Forms.Button();
             this.lblPasswordText = new System.Windows.Forms.Label();
+            this.btnPasswordEntry = new System.Windows.Forms.Button();
+            this.txtPassword = new System.Windows.Forms.TextBox();
             this.pnlUserLogin = new System.Windows.Forms.Panel();
             this.lblUserID = new System.Windows.Forms.Label();
             this.pnlPasswordScreen.SuspendLayout();
@@ -70,16 +70,18 @@
             this.pnlPasswordScreen.TabIndex = 2;
             this.pnlPasswordScreen.Visible = false;
             // 
-            // txtPassword
+            // lblPasswordText
             // 
-            this.txtPassword.Location = new System.Drawing.Point(179, 139);
-            this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(100, 20);
-            this.txtPassword.TabIndex = 0;
+            this.lblPasswordText.AutoSize = true;
+            this.lblPasswordText.Location = new System.Drawing.Point(158, 84);
+            this.lblPasswordText.Name = "lblPasswordText";
+            this.lblPasswordText.Size = new System.Drawing.Size(138, 13);
+            this.lblPasswordText.TabIndex = 2;
+            this.lblPasswordText.Text = "Please enter your 4 digit Pin";
             // 
             // btnPasswordEntry
             // 
-            this.btnPasswordEntry.Location = new System.Drawing.Point(191, 165);
+            this.btnPasswordEntry.Location = new System.Drawing.Point(191, 136);
             this.btnPasswordEntry.Name = "btnPasswordEntry";
             this.btnPasswordEntry.Size = new System.Drawing.Size(75, 23);
             this.btnPasswordEntry.TabIndex = 1;
@@ -87,14 +89,12 @@
             this.btnPasswordEntry.UseVisualStyleBackColor = true;
             this.btnPasswordEntry.Click += new System.EventHandler(this.btnPasswordEntry_Click);
             // 
-            // lblPasswordText
+            // txtPassword
             // 
-            this.lblPasswordText.AutoSize = true;
-            this.lblPasswordText.Location = new System.Drawing.Point(158, 110);
-            this.lblPasswordText.Name = "lblPasswordText";
-            this.lblPasswordText.Size = new System.Drawing.Size(138, 13);
-            this.lblPasswordText.TabIndex = 2;
-            this.lblPasswordText.Text = "Please enter your 4 digit Pin";
+            this.txtPassword.Location = new System.Drawing.Point(179, 110);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(100, 20);
+            this.txtPassword.TabIndex = 0;
             // 
             // pnlUserLogin
             // 
@@ -118,6 +118,7 @@
             // 
             // frmUserIdPrompt
             // 
+            this.AcceptButton = this.btnUserIDEntry;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(497, 257);
