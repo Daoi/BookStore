@@ -20,31 +20,12 @@ namespace BookStore
         //Load employee data on form load.
         private void frmUserIdPrompt_Load(object sender, EventArgs e)
         {
-            string filepath = Path.GetFullPath(employeeFile);
-            Employee currentEmployee;
-            StreamReader employeeInfoFile = new StreamReader(filepath);
-            //Can condense file reading into a class
-            //Check for what type of file it is using if statement, read first line
-            //If it matches regex for ID it's an employee file
-            //If it matches regex for ISBN it's a bookfile
-            string line;
-            while ((line = employeeInfoFile.ReadLine()) != null)
-            {
-                string[] employeeInfo = line.Split('|');
-                //User ID Validation(Doesn't exist, is in right format)
-                if (Regex.IsMatch(employeeInfo[0], @"^[0-9]{5}$") && !employeeInfoDB.DoesIdExist(employeeInfo[0]))
-                {
+            string filePath = Path.GetFullPath(employeeFile);
+            if (!FileReader.ReadFile(filePath, ref employeeInfoDB))
+            {//What to do if theres a problem
 
-                    currentEmployee = Employee.CreateAndPopulateEmployeeObject(employeeInfo, employeeInfoDB);
-                    employeeInfoDB.AddEmployee(currentEmployee);
-
-                }
-                else//What to do if we have invalid entry in txt file/data corruption
-                {
-
-                }
             }
-            employeeInfoFile.Close();
+
         }
         
         //Check for correct user name
@@ -108,6 +89,5 @@ namespace BookStore
             }
 
         }
-
     }
 }

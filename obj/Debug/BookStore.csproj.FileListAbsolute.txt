@@ -9,3 +9,14 @@ C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Debug\BookStore.csproj.CoreCo
 C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Debug\BookStore.exe
 C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Debug\BookStore.pdb
 C:\Users\Mrah\source\repos\BookStore\BookStore\obj\Debug\BookStore.frmMain.resources
+C:\Users\Kevin\source\repos\BookStore\BookStore\bin\Debug\BookStore.exe.config
+C:\Users\Kevin\source\repos\BookStore\BookStore\bin\Debug\BookStore.exe
+C:\Users\Kevin\source\repos\BookStore\BookStore\bin\Debug\BookStore.pdb
+C:\Users\Kevin\source\repos\BookStore\BookStore\obj\Debug\BookStore.csprojAssemblyReference.cache
+C:\Users\Kevin\source\repos\BookStore\BookStore\obj\Debug\BookStore.frmUserIdPrompt.resources
+C:\Users\Kevin\source\repos\BookStore\BookStore\obj\Debug\BookStore.frmMain.resources
+C:\Users\Kevin\source\repos\BookStore\BookStore\obj\Debug\BookStore.Properties.Resources.resources
+C:\Users\Kevin\source\repos\BookStore\BookStore\obj\Debug\BookStore.csproj.GenerateResource.cache
+C:\Users\Kevin\source\repos\BookStore\BookStore\obj\Debug\BookStore.csproj.CoreCompileInputs.cache
+C:\Users\Kevin\source\repos\BookStore\BookStore\obj\Debug\BookStore.exe
+C:\Users\Kevin\source\repos\BookStore\BookStore\obj\Debug\BookStore.pdb

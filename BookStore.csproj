@@ -49,6 +49,7 @@
     <Compile Include="Book.cs" />
     <Compile Include="Employee.cs" />
     <Compile Include="EmployeeList.cs" />
+    <Compile Include="FileReader.cs" />
     <Compile Include="frmLogin.cs">
       <SubType>Form</SubType>
     </Compile>

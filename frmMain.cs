@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BookStore
@@ -18,7 +10,6 @@ namespace BookStore
         Employee currentUser;
         EmployeeList employeeInfo;
         Book currentBook;
-
 
         public frmMain(Employee user, EmployeeList info)
         {
@@ -44,27 +35,15 @@ namespace BookStore
         public void FindAndSaveBook(string isbn)
         {
             string filepath = Path.GetFullPath(bookFile);
-            StreamReader bookInfoFile = new StreamReader(filepath);
+            if(FileReader.ReadFile(bookFile, ref currentBook, txtISBNNumLookUp.Text)){
 
-            string line;
-            while ((line = bookInfoFile.ReadLine()) != null)
-            {
-                string[] bookInfo = line.Split('|');
-                //ISBN ID Validatio(Two groups of 3 digits delimited by hyphen)
-                if (Book.ValidateISBNFormat(bookInfo[0]))
-                {
-                    if (bookInfo[0] == txtISBNNumLookUp.Text)
-                    {
-                        currentBook = new Book(bookInfo);
-                        UpdateDisplayInfo(currentBook.BookInfo());
-                    }
-                }
-                else//What to do if we have invalid entry in txt file/data corruption
-                {
+                UpdateDisplayInfo(currentBook.BookInfo());
 
-                }
             }
-            bookInfoFile.Close();
+            else//There was a problem with something, do stuff?
+            {
+
+            }
         }
 
         public void UpdateDisplayInfo(string[] info)
@@ -81,6 +60,28 @@ namespace BookStore
         private void btnExitSys_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void btnUpdateBook_Click(object sender, EventArgs e)
+        {
+            //string[] info = add info text boxes text
+            //Convert to string, write to file 
+        }
+
+        private void btnDeleteBook_Click(object sender, EventArgs e)
+        {
+            
+        }
+        //I wish i put these text boxes on a panel so I didnt have to keep typing all of them out :[
+        private void btnAddNew_Click(object sender, EventArgs e)
+        {
+            string[] info = {txtISBNNumInfo.Text,
+                            txtTitleInfo.Text,
+                            txtAuthorInfo.Text,
+                            txtPriceInfo.Text,
+                            txtOnHandInfo.Text,
+                            txtDateInfo.Text
+                            };
         }
     }
 }

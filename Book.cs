@@ -13,6 +13,16 @@ namespace BookStore
         private int numberOnHand;
         private DateTime lastTransaction; //Use ToString("d") for displaying in correct format
 
+        public Book()
+        {
+            isbn = "000-000";
+            title = "";
+            author = "";
+            price = 0.00m;
+            numberOnHand = 0;
+            lastTransaction = DateTime.Today;
+        }
+
         public Book(string[] bookInfo)
         {
             isbn = bookInfo[0];
