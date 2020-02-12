@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -28,6 +30,10 @@ namespace BookStore
             isbn = bookInfo[0];
             title = bookInfo[1];
             author = bookInfo[2];
+            if (bookInfo[3].Contains("$"))
+            {
+                bookInfo[3] = bookInfo[3].Replace("$", "0");
+            }
             if (!Decimal.TryParse(bookInfo[3], out price))
             {
                 MessageBox.Show("Book list data corrupted, ISBN: " + isbn + ". Price error. Check sticker and update.", "Data Corruption");
@@ -52,9 +58,25 @@ namespace BookStore
         }
 
         override public string ToString() {
-
-            return "";
-
+            StringBuilder sb = new StringBuilder("\r\n");
+            string[] info = BookInfo();
+            if(info[3].Contains('$'))
+            {
+                info[3] = info[3].Replace("$", "");
+            }
+            foreach(var value in info)
+            {
+                if(value is string)
+                {
+                    sb.Append(value + '|');
+                }
+                else
+                {
+                    MessageBox.Show("I don't think this can happen", "I hope this can't happen");
+                }
+            }
+            sb.Remove(sb.Length - 1, 1);
+            return sb.ToString();
         }
 
         public string[] BookInfo()

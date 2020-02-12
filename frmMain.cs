@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace BookStore
 {
@@ -35,7 +36,7 @@ namespace BookStore
         public void FindAndSaveBook(string isbn)
         {
             string filepath = Path.GetFullPath(bookFile);
-            if(FileReader.ReadFile(bookFile, ref currentBook, txtISBNNumLookUp.Text)){
+            if(FileHandler.bookSearch(bookFile, ref currentBook, txtISBNNumLookUp.Text)){
 
                 UpdateDisplayInfo(currentBook.BookInfo());
 
@@ -82,6 +83,28 @@ namespace BookStore
                             txtOnHandInfo.Text,
                             txtDateInfo.Text
                             };
+            if (info.Contains(""))//Make sure all fields have a value.
+            {
+                MessageBox.Show("Please fill out all of the book info fields", "Invalid data");
+            }
+            else
+            {
+                DialogResult dr = MessageBox.Show("Are you sure you'd like to add the book displayed to the inventory?",
+                                      "Add Book", MessageBoxButtons.YesNo);
+                if (dr == DialogResult.Yes)
+                {
+                    Book addBook = new Book(info);
+                    if (FileHandler.bookSearch(bookFile, ref addBook, info[0], "add"))
+                    {
+                        MessageBox.Show("The book has been succesfully added.", "Success!");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Action cancled.", "Cancled");
+                    return;
+                }
+            }
         }
     }
 }

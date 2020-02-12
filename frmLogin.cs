@@ -21,27 +21,29 @@ namespace BookStore
         private void frmUserIdPrompt_Load(object sender, EventArgs e)
         {
             string filePath = Path.GetFullPath(employeeFile);
-            if (!FileReader.ReadFile(filePath, ref employeeInfoDB))
+            if (!FileHandler.ReadFile(filePath, ref employeeInfoDB))
             {//What to do if theres a problem
 
             }
 
         }
-        
+        int attempts = 0;
+
         //Check for correct user name
         //This is a bit of a security flaw
         //A user can confirm a real ID by guessing
         //And the system will tell them whether its valid because its moves to a different screen. 
         private void btnUserIDEntry_Click(object sender, EventArgs e)
         {
-            int id = Convert.ToInt32(txtUserID.Text);
-
+            int id;
             if (!Regex.IsMatch(txtUserID.Text, @"^[0-9]{5}$")) {
                 MessageBox.Show("Please enter your 5 digit User ID", "Invalid ID");
                 txtUserID.Focus();
+                attempts++;
             }
             else if(employeeInfoDB.DoesIdExist(txtUserID.Text))
             {
+                id = Convert.ToInt32(txtUserID.Text);
                 currentUser = employeeInfoDB.LookUpEmployee(id);
                 pnlUserLogin.Enabled = false;
                 pnlUserLogin.Visible = false;
@@ -49,16 +51,16 @@ namespace BookStore
                 pnlPasswordScreen.Visible = true;
                 AcceptButton = btnPasswordEntry;
                 txtPassword.Focus();
+                attempts = 0;
             }
             
         }
 
         //Counter for password attempts
-        int attempts = 0;
         //Pin validation
         private void btnPasswordEntry_Click(object sender, EventArgs e)
         {
-          
+             
             
             if (attempts == 3)
             {
@@ -75,15 +77,16 @@ namespace BookStore
             }
             else if (currentUser.getPin() == txtPassword.Text) //Succesful Login
             {
+                attempts = 0;
                 MessageBox.Show("Pin entered correctly", "Correct pin");
-
                 frmMain mainStorePage = new frmMain(currentUser, employeeInfoDB);
                 this.Hide();
                 mainStorePage.Show();
+
             }
             else
             {
-                MessageBox.Show("Pin entered incorrectly", "Incorrect pin"); //Bad pin
+                MessageBox.Show("Invalid pin", "Incorrect pin"); //Bad pin
                 txtPassword.Focus();
                 attempts++;
             }
