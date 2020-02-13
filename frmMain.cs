@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BookStore
 {
@@ -13,6 +14,12 @@ namespace BookStore
         EmployeeList employeeInfo;
         Book currentBook;
         FileHandler fh;
+        string[] validation = new string[] //String array of regex to validate user data
+                                           { "@^\\d{ 3 }(?: -\\d{ 3 })$", //ISBN (3 digits - 3 digits)
+                                            "^\\w++(?:[.,_:()\\s-](?![.\\s-])|\\w++)*$", //Title (Alphabet and some special characters)
+                                             @"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$", //Author(Start alphabetical, allow special character/space, end Alphabetical)
+                                             "/^(0|[1-9]\\d*)(\\.\\d+)?$/", //Price(Positive fractional or whole numbers, with period seperator)
+                                             "/^(0|[1-9]\\d*)$/"};//Number on hand(Positive whole numbers)
         //Retrieve the currentUser and Employee List from form1. Initialize our file handler.
         public frmMain(Employee user, EmployeeList info)
         {
@@ -68,45 +75,50 @@ namespace BookStore
                             txtOnHandInfo.Text,
                             txtDateInfo.Text
                             };
-
-            bool fieldCheck = true;
-            foreach (string value in info)
+            //Validation start
+            for(int i = 0; i < info.Length; i++)
             {
-                if (string.IsNullOrWhiteSpace(value))
+                if (i < 5)
                 {
-                    fieldCheck = false;
-                }
-            }
-
-            if (!fieldCheck)//Make sure all fields have a value.
-            {
-                MessageBox.Show("Please fill out all of the book info fields", "Invalid data");
-                return;
-            }
-            else
-            {
-                DialogResult dr = MessageBox.Show("Are you sure you'd like to add the book displayed to the inventory?",
-                                      "Add Book", MessageBoxButtons.YesNo);
-                if (dr == DialogResult.Yes)
-                {
-                    Book updateBook = new Book(info);
-                    string updatedInfo = updateBook.ToString();
-                    if (fh.bookSearch(ref updateBook, info[0], "update"))
+                    if (!Regex.IsMatch(info[i], validation[i]))
                     {
-
-                        fh.updateFile();
-                        MessageBox.Show("The book has been succesfully updated.", "Success!");
-                    }
-                    else
-                    {
-                        MessageBox.Show("ISBN: " + info[0] + " couldn't be updated.", "Error!");
+                        MessageBox.Show("Invalid data input, please recheck the fields at the bottom.", "Data Error");
+                        return;
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Action cancled.", "Cancled");
-                    return;
+                    try
+                    {
+                        DateTime.Parse(info[5]);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Invalid date input, please recheck the fields at the bottom.", "Data Error");
+                        return;
+                    }
                 }
+            }//Validation End
+            DialogResult dr = MessageBox.Show("Are you sure you'd like to update the book displayed to the inventory?",
+                                    "Add Book", MessageBoxButtons.YesNo);
+            if (dr == DialogResult.Yes)
+            {
+                Book updateBook = new Book(info);
+                string updatedInfo = updateBook.ToString();
+                if (fh.bookSearch(ref updateBook, info[0], "update"))
+                {
+                    fh.updateFile();
+                    MessageBox.Show("The book has been succesfully updated.", "Success!");
+                }
+                else
+                {
+                    MessageBox.Show("ISBN: " + info[0] + " couldn't be updated.", "Error!");
+                }
+            }
+            else//No or exited prompt.
+            {
+                MessageBox.Show("Action cancled.", "Cancled");
+                return;
             }
         }
         //Search for an ISBN, if we find it, delete it. 
@@ -120,7 +132,11 @@ namespace BookStore
                             txtDateInfo.Text
                             };
             Book deleteBook = new Book(info);
-            if(fh.bookSearch(ref deleteBook, info[0], "delete"))
+            if(!Regex.IsMatch(info[0], validation[0])){
+                MessageBox.Show("Invalid ISBN number please re enter.","ISBN error");
+                return;
+            }
+            if (fh.bookSearch(ref deleteBook, info[0], "delete"))
             {
                 fh.updateFile();
                 MessageBox.Show("Book with ISBN: " + info[0] + " has been deleted.", "Succesful Delete");
@@ -144,50 +160,57 @@ namespace BookStore
                             txtDateInfo.Text
                             };
 
-            bool fieldCheck = true;
-            foreach (string value in info)
+            //Validation start
+            for (int i = 0; i < info.Length; i++)
             {
-                if (string.IsNullOrWhiteSpace(value))
+                if (i < 5)
                 {
-                    fieldCheck = false;
-                }
-            }
-
-           if(fieldCheck)
-            {
-                DialogResult dr = MessageBox.Show("Are you sure you'd like to add the book displayed to the inventory?",
-                                      "Add Book", MessageBoxButtons.YesNo);
-                if (dr == DialogResult.Yes)
-                {
-                    Book addBook = new Book(info);
-                    if (!fh.bookSearch(ref addBook, info[0]))
+                    if (!Regex.IsMatch(info[i], validation[i]))
                     {
-                        if (fh.addBook(addBook.ToString()))
-                        {
-
-                            MessageBox.Show("The book has been succesfully added.", "Success!");
-                        }
-                        else
-                        {
-                            MessageBox.Show("Error adding book", "File Error");
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Book with ISBN: " + info[0] + " already exists. Recheck your info.", "Duplicate Record");
+                        MessageBox.Show("Invalid data input, please recheck the fields at the bottom.", "Data Error");
                         return;
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Action cancled.", "Cancled");
+                    try
+                    {
+                        DateTime.Parse(info[5]);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Invalid date input, please recheck the fields at the bottom.", "Data Error");
+                        return;
+                    }
+                }
+            }//Validation End
+            DialogResult dr = MessageBox.Show("Are you sure you'd like to add the book displayed to the inventory?",
+                                      "Add Book", MessageBoxButtons.YesNo);
+            if (dr == DialogResult.Yes)
+            {
+                Book addBook = new Book(info);
+                if (!fh.bookSearch(ref addBook, info[0]))
+                {
+                    if (fh.addBook(addBook.ToString()))
+                    {
+
+                        MessageBox.Show("The book has been succesfully added.", "Success!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error adding book", "File Error");
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Book with ISBN: " + info[0] + " already exists. Recheck your info.", "Duplicate Record");
                     return;
                 }
             }
             else
             {
-                MessageBox.Show("Data missing. Please double check the info you've entered.", "Cancled");
+                MessageBox.Show("Action cancled.", "Cancled");
                 return;
             }
         }
