@@ -15,11 +15,11 @@ namespace BookStore
         Book currentBook;
         FileHandler fh;
         string[] validation = new string[] //String array of regex to validate user data
-                                           { "@^\\d{ 3 }(?: -\\d{ 3 })$", //ISBN (3 digits - 3 digits)
-                                            "^\\w++(?:[.,_:()\\s-](?![.\\s-])|\\w++)*$", //Title (Alphabet and some special characters)
+                                           { @"^\d{3}(?:-\d{3})$", //ISBN (3 digits - 3 digits)
+                                            @"(.*?)", //Title (Matches any string)
                                              @"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$", //Author(Start alphabetical, allow special character/space, end Alphabetical)
-                                             "/^(0|[1-9]\\d*)(\\.\\d+)?$/", //Price(Positive fractional or whole numbers, with period seperator)
-                                             "/^(0|[1-9]\\d*)$/"};//Number on hand(Positive whole numbers)
+                                             @"^[$]?(0|[1-9]\d*)(\.\d+)?$", //Price(Positive fractional or whole numbers, with period seperator)
+                                             @"^(0|[1-9]\d*)$"};//Number on hand(Positive whole numbers)
         //Retrieve the currentUser and Employee List from form1. Initialize our file handler.
         public frmMain(Employee user, EmployeeList info)
         {
@@ -38,6 +38,12 @@ namespace BookStore
         //Look up an ISBN number in our bookList file. Calls bookSearch in FileHandler class. Updates display for users.
         private void btnISBNSearch_Click(object sender, EventArgs e)
         {
+            if(!Regex.IsMatch(txtISBNNumLookUp.Text, validation[0]))
+            {
+                MessageBox.Show("Invalid ISBN number, please re enter." + validation[0], "Invalid ISBN");
+                return;
+            }
+
             if (fh.bookSearch(ref currentBook, txtISBNNumLookUp.Text))
             {
 
@@ -100,7 +106,7 @@ namespace BookStore
                 }
             }//Validation End
             DialogResult dr = MessageBox.Show("Are you sure you'd like to update the book displayed to the inventory?",
-                                    "Add Book", MessageBoxButtons.YesNo);
+                                    "Update Book", MessageBoxButtons.YesNo);
             if (dr == DialogResult.Yes)
             {
                 Book updateBook = new Book(info);
@@ -167,7 +173,7 @@ namespace BookStore
                 {
                     if (!Regex.IsMatch(info[i], validation[i]))
                     {
-                        MessageBox.Show("Invalid data input, please recheck the fields at the bottom.", "Data Error");
+                        MessageBox.Show("Invalid data input, please recheck the fields at the bottom." + validation[i], "Data Error");
                         return;
                     }
                 }
