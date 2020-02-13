@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace BookStore
 {
+    //Handles employee roster, using a Map<int(UserID), Employee(Obj)>
     public class EmployeeList
     {
         private Dictionary<int, Employee> employeeInfoDB = new Dictionary<int, Employee>();

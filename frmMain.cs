@@ -5,48 +5,44 @@ using System.Linq;
 
 namespace BookStore
 {
+    //The "Main" form. Handles all the actions related to books. Search/Add/Delete/Update a record. Display relevant info.
     public partial class frmMain : Form
     {
         const string bookFile = "bookList.txt";
         Employee currentUser;
         EmployeeList employeeInfo;
         Book currentBook;
-
+        FileHandler fh;
+        //Retrieve the currentUser and Employee List from form1. Initialize our file handler.
         public frmMain(Employee user, EmployeeList info)
         {
             InitializeComponent();
             currentUser = user;
             employeeInfo = info;
+            fh = new FileHandler(bookFile);
+
         }
 
-
+        //Greet user
         private void frmMain_Load(object sender, EventArgs e)
         {
-            txtISBNNumLookUp.Mask = "000-000";
-            txtISBNNumInfo.Mask = "000-000";
-            lblWelcome.Text = "Welcome " + currentUser.getName();
-            
+            lblWelcome.Text = "Welcome " + currentUser.getName();   
         }
-
+        //Look up an ISBN number in our bookList file. Calls bookSearch in FileHandler class. Updates display for users.
         private void btnISBNSearch_Click(object sender, EventArgs e)
         {
-            FindAndSaveBook(txtISBNNumLookUp.Text);
-        }
-
-        public void FindAndSaveBook(string isbn)
-        {
-            string filepath = Path.GetFullPath(bookFile);
-            if(FileHandler.bookSearch(bookFile, ref currentBook, txtISBNNumLookUp.Text)){
+            if (fh.bookSearch(ref currentBook, txtISBNNumLookUp.Text))
+            {
 
                 UpdateDisplayInfo(currentBook.BookInfo());
 
             }
             else//There was a problem with something, do stuff?
             {
-
+                MessageBox.Show("ISBN not valid or file corrupted", "File Error");
             }
         }
-
+       //Display relevant values in the textboxes at bottom of the form
         public void UpdateDisplayInfo(string[] info)
         {
 
@@ -62,18 +58,82 @@ namespace BookStore
         {
             Application.Exit();
         }
-
+        //Find a record and update it based on textboxes at bottom of form.
         private void btnUpdateBook_Click(object sender, EventArgs e)
         {
-            //string[] info = add info text boxes text
-            //Convert to string, write to file 
-        }
+            string[] info = {txtISBNNumInfo.Text,
+                            txtTitleInfo.Text,
+                            txtAuthorInfo.Text,
+                            txtPriceInfo.Text,
+                            txtOnHandInfo.Text,
+                            txtDateInfo.Text
+                            };
 
+            bool fieldCheck = true;
+            foreach (string value in info)
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    fieldCheck = false;
+                }
+            }
+
+            if (!fieldCheck)//Make sure all fields have a value.
+            {
+                MessageBox.Show("Please fill out all of the book info fields", "Invalid data");
+                return;
+            }
+            else
+            {
+                DialogResult dr = MessageBox.Show("Are you sure you'd like to add the book displayed to the inventory?",
+                                      "Add Book", MessageBoxButtons.YesNo);
+                if (dr == DialogResult.Yes)
+                {
+                    Book updateBook = new Book(info);
+                    string updatedInfo = updateBook.ToString();
+                    if (fh.bookSearch(ref updateBook, info[0], "update"))
+                    {
+
+                        fh.updateFile();
+                        MessageBox.Show("The book has been succesfully updated.", "Success!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("ISBN: " + info[0] + " couldn't be updated.", "Error!");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Action cancled.", "Cancled");
+                    return;
+                }
+            }
+        }
+        //Search for an ISBN, if we find it, delete it. 
         private void btnDeleteBook_Click(object sender, EventArgs e)
         {
-            
+            string[] info = {txtISBNNumInfo.Text,
+                            txtTitleInfo.Text,
+                            txtAuthorInfo.Text,
+                            txtPriceInfo.Text,
+                            txtOnHandInfo.Text,
+                            txtDateInfo.Text
+                            };
+            Book deleteBook = new Book(info);
+            if(fh.bookSearch(ref deleteBook, info[0], "delete"))
+            {
+                fh.updateFile();
+                MessageBox.Show("Book with ISBN: " + info[0] + " has been deleted.", "Succesful Delete");
+                info.ToList().ForEach(x => x = "");
+            }
+            else
+            {
+                MessageBox.Show("Book with ISBN: " + info[0] + " was not deleted or didn't exist", "Action cancled");
+            }
+
         }
         //I wish i put these text boxes on a panel so I didnt have to keep typing all of them out :[
+        //Add a record to the file, if the ISBN already exists, don't add it.
         private void btnAddNew_Click(object sender, EventArgs e)
         {
             string[] info = {txtISBNNumInfo.Text,
@@ -83,20 +143,40 @@ namespace BookStore
                             txtOnHandInfo.Text,
                             txtDateInfo.Text
                             };
-            if (info.Contains(""))//Make sure all fields have a value.
+
+            bool fieldCheck = true;
+            foreach (string value in info)
             {
-                MessageBox.Show("Please fill out all of the book info fields", "Invalid data");
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    fieldCheck = false;
+                }
             }
-            else
+
+           if(fieldCheck)
             {
                 DialogResult dr = MessageBox.Show("Are you sure you'd like to add the book displayed to the inventory?",
                                       "Add Book", MessageBoxButtons.YesNo);
                 if (dr == DialogResult.Yes)
                 {
                     Book addBook = new Book(info);
-                    if (FileHandler.bookSearch(bookFile, ref addBook, info[0], "add"))
+                    if (!fh.bookSearch(ref addBook, info[0]))
                     {
-                        MessageBox.Show("The book has been succesfully added.", "Success!");
+                        if (fh.addBook(addBook.ToString()))
+                        {
+
+                            MessageBox.Show("The book has been succesfully added.", "Success!");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error adding book", "File Error");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Book with ISBN: " + info[0] + " already exists. Recheck your info.", "Duplicate Record");
+                        return;
                     }
                 }
                 else
@@ -104,6 +184,33 @@ namespace BookStore
                     MessageBox.Show("Action cancled.", "Cancled");
                     return;
                 }
+            }
+            else
+            {
+                MessageBox.Show("Data missing. Please double check the info you've entered.", "Cancled");
+                return;
+            }
+        }
+        //Stop people from using the space key for ISBN numbers.
+        //Can still "enter" white spaces with arrow keys
+        //But an extra attempt at data validation.
+        private void txtISBNNumLookUp_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                return;
+            }
+        }
+
+        private void txtISBNNumInfo_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+                return;
             }
         }
     }

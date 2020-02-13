@@ -1,42 +1,49 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace BookStore
 {
-    //Handle file stuff
+    //Handles all the reading/writing of files involved in the project.
     public class FileHandler
     {
-        private static string tempFile = Path.Combine(Path.GetTempPath(), "SaveFile.txt");
-        private const string sourceFile = "bookList.txt";
+        private static string tempFile = Path.Combine(Path.GetTempPath(), "BSTempFile.txt");
+        private static string backUpFile = Path.Combine(Path.GetTempPath(), "BSBackUpFile.txt");
+        private static string sourceFile = "bookList.txt";
         private static Book currentBook;
-        public static void WriteFile(string line, string flag = "")
-        {
+        private static StreamWriter sw;// new StreamWriter(tempFile);
+        private static StreamReader sr;
 
-            if (flag == "add")
+        public FileHandler(string path)
+        {
+            sourceFile = path;
+
+        }
+        //Append the line to the end of the bookList file to add a new book. Nothing complicated needed.
+        public bool addBook(string line)
+        {
+            try
             {
-                StreamWriter sw = File.AppendText(sourceFile);
-                sw.Write(currentBook.ToString());
-                sw.Close();
+                StreamWriter addWriter = File.AppendText(sourceFile);
+                addWriter.Write(currentBook.ToString());
+                addWriter.Close();
+                return true;
             }
-            else {
-                StreamWriter sw = new StreamWriter(tempFile);
-                sw.Write(line + "\r\n");
-                sw.Close();
+            catch(Exception e)
+            {
+                MessageBox.Show(e.ToString(), "Add error!");
+                return false;
             }
+
         }
 
-
-        public static string[] FindLine(string isbn)
+        //Read the employee file and create the list(Dictionary) of employees. Key = User ID, Value = Employee object. No search needed.
+        public static bool ReadEmployeeFile(string path, ref EmployeeList employeeInfoDB)
         {
-            return null;
-        }
-
-        public static bool ReadFile(string path, ref EmployeeList employeeInfoDB)
-        {
-            StreamReader sr = new StreamReader(path);
+            StreamReader srEmployee = new StreamReader(path);
             string line;
-            while ((line = sr.ReadLine()) != null)
+            while ((line = srEmployee.ReadLine()) != null)
             {
                 string[] employeeInfo = line.Split('|');
                 //User ID Validation(Doesn't exist, is in right format)
@@ -45,40 +52,47 @@ namespace BookStore
 
                     Employee currentEmployee = Employee.CreateAndPopulateEmployeeObject(employeeInfo, employeeInfoDB);
                     employeeInfoDB.AddEmployee(currentEmployee);
-                    return true;
 
                 }
                 else//What to do if we have invalid entry in txt file/data corruption
                 {
-                    sr.Close();
+                    srEmployee.Close();
                     return false;
                 }
             }
 
-            sr.Close();
-            return false;
+            srEmployee.Close();
+            return true;
 
         }
-
-        private static bool updateFile()
+        //Copy our temp file to the location of our source file and over write. Also create a back up(Not really used atm.)
+        public bool updateFile()
         {
             try
             {
-                File.Move(tempFile, sourceFile);
+                File.Replace(tempFile, sourceFile, backUpFile);
                 return true;
             }
-            catch
+            catch(Exception e)
             {
+                MessageBox.Show(e.ToString(), "File failure");
                 return false;
             }
         }
-
-        public static bool bookSearch(string path, ref Book book, string isbn, string flag = "")
+        //Handles searching the book file for the specified book, as well as deleting/updating files.
+        //Flags are "delete"/"update". Add is handled with a boolean and then calling the addBook method.
+        //Doing it this way prevents having to research search/scan the file for deleting/updating. 
+        //While you could do delete/update in similar ways it revolves around constantly keeping track
+        //of the Reader/Writer which I feel is more difficult to follow than this method.
+        //Howevevr, this method does kind of do a lot and is a pain to read through.
+        public bool bookSearch(ref Book book, string isbn, string flag = "")
         {
-            currentBook = book;
-            StreamReader sr = new StreamReader(path);
+            sw = new StreamWriter(tempFile);
+            sr = new StreamReader(sourceFile);
+            currentBook = book; //Store original book passed
             string line;
-            bool update = false;
+            bool found = false;
+            flag.ToLower();
 
                 while ((line = sr.ReadLine()) != null)
                 {
@@ -86,70 +100,65 @@ namespace BookStore
                     //ISBN ID Validatio(Two groups of 3 digits delimited by hyphen)
                     if (Book.ValidateISBNFormat(bookInfo[0]))
                     {
-                        if (bookInfo[0] == isbn)
+                        if (bookInfo[0] == isbn && flag == "")//Just a search, return the book that was being looked for.
                         {
-                            if(flag == "add")//They're trying to add a book but it already exists.
-                            {
-                                MessageBox.Show("The book you're trying to add already exists", "Book already exists");//Move to form code probably
-                                return false;
-                            }
-                            else if(flag == "update")//File exists, update it and write new lines
-                            {
-                                WriteFile(book.ToString());
-                                update = true;
-                            }
-                            else if(flag == "delete")//File exists, don't copy it to tempFile
-                            {
-                                break;
-                            }
-                            else { //No special flags, must be a look up.
-                                book = new Book(bookInfo);
-                                WriteFile(line);
-                                sr.Close();
-                                return true;
-                            }
+                            book = new Book(bookInfo);
+                            found = true;
+                            writeLine(line);
                         }
-                        else//No matches, just write
+                        else if(bookInfo[0] == isbn && flag == "delete")//Record found, delete it? If yes, just skip writing.
                         {
-                        WriteFile(line);
+                            Book deleteBook = new Book(bookInfo);
+                            DialogResult dr = MessageBox.Show("Book with ISBN: " + isbn + " found.\r\n" +
+                                          String.Join(Environment.NewLine,deleteBook.BookInfo()) + "\r\nIs this the book you wish to delete?",
+                                         "Delete Book", MessageBoxButtons.YesNo);
+                            if (dr == DialogResult.Yes)
+                            {
+                                found = true;
+                            }
+                            else//They dont want to delete a book/this book, so write it. 
+                            //Technically not needed since in this case the source file shouldnt be overwritten. Helps illustrate whats going on though maybe.
+                            {
+                                writeLine(line);
+                            }
+                            
                         }
-                    }
+                        else if (bookInfo[0] == isbn && flag == "update")//Update a record
+                        {
+                            writeLine(currentBook.ToString());
+                            found = true;
+                        }
+                        else//This book doesn't match the book being searched for, safe to just write it.
+                        {
+                            this.writeLine(line);
+                        }
+
+                }
                     else//What to do if we have invalid entry in txt file/data corruption
                     {
                         MessageBox.Show("Inventory file has issue at ISBN: " + bookInfo[0], "Data Corruption");//Move to form code probably
-                        sr.Close();
                         return false;
                     }
 
                 }
-            if (flag == "delete")//ISBN trying to be deleted wasn't found, return error
+            sr.Close();
+            sw.Close();
+            return found;
+
+        }
+        //Write lines to the temporary file
+        public bool writeLine(string line)
+        {
+            try
             {
-                MessageBox.Show("No book with ISBN: " + isbn + " exists in inventory file", "Missing data");//Move to form code probably
-                return false;
-            }
-            if (flag == "add")//The ISBN trying to be added wasn't found, we can append it to end of file
-            {
-                sr.Close();
-                WriteFile(book.ToString(), flag);
+                sw.WriteLine(line);
                 return true;
             }
-            if(flag == "update")
+            catch(Exception e)
             {
-                return update;
-            }
-
-            if (updateFile())
-            {
-                MessageBox.Show("Changes succesful.", "Success!");//Move to form code probably
-                sr.Close();
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("Could not make changes, file write error.", "Error!");//Move to form code probably
+                MessageBox.Show(e.ToString(), "Line Write Error");
                 return false;
             }
-
         }
 
 

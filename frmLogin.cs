@@ -5,7 +5,8 @@ using System.Windows.Forms;
 
 namespace BookStore
 {
-
+    //The login form. Handles entering of UserIDs and Pins
+    //Validates Data, limits tries. Also makes sure the employee file is initalized/updated 
     public partial class frmUserIdPrompt : Form
     {
         EmployeeList employeeInfoDB = new EmployeeList();
@@ -21,7 +22,7 @@ namespace BookStore
         private void frmUserIdPrompt_Load(object sender, EventArgs e)
         {
             string filePath = Path.GetFullPath(employeeFile);
-            if (!FileHandler.ReadFile(filePath, ref employeeInfoDB))
+            if (!FileHandler.ReadEmployeeFile(filePath, ref employeeInfoDB))
             {//What to do if theres a problem
 
             }

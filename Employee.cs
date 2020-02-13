@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace BookStore
 {
+    //Handles employee information
     public class Employee
     {
         private int employeeId;
