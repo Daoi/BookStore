@@ -35,7 +35,6 @@ namespace BookStore
                 MessageBox.Show(e.ToString(), "Add error!");
                 return false;
             }
-
         }
 
         //Read the employee file and create the list(Dictionary) of employees. Key = User ID, Value = Employee object. No search needed.
