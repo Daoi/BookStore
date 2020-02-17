@@ -73,6 +73,7 @@ namespace BookStore
         //Find a record and update it based on textboxes at bottom of form.
         private void btnUpdateBook_Click(object sender, EventArgs e)
         {
+            updateDate();
             string[] info = getInfo();
             if (validateInfo())
             {
@@ -124,6 +125,7 @@ namespace BookStore
         //Add a record to the file, if the ISBN already exists, don't add it.
         private void btnAddNew_Click(object sender, EventArgs e)
         {
+            updateDate();
             string[] info = getInfo();
             if (validateInfo())
             {
@@ -184,7 +186,7 @@ namespace BookStore
         public string[] getInfo() {
 
             string[] info = {
-                txtISBNNumInfo.Text,
+                            txtISBNNumInfo.Text,
                             txtTitleInfo.Text,
                             txtAuthorInfo.Text,
                             txtPriceInfo.Text,
@@ -223,6 +225,21 @@ namespace BookStore
             }//Validation End
             return true;
         }
+
+        private void updateDate()
+        {
+            if (txtDateInfo.Text != DateTime.Today.ToString("MM/dd/yyyy"))
+            {
+                DialogResult dr = MessageBox.Show("The last transaction date field doesn't have todays date." + "\r\n" + 
+                    "Would you like to use todays date: " + DateTime.Today.ToString("MM/dd/yyyy") + "?",
+                        "Update Date", MessageBoxButtons.YesNo);
+                if (dr == DialogResult.Yes)
+                {
+                    txtDateInfo.Text = DateTime.Today.ToString("MM/dd/yyyy");
+                }
+            }
+        }
+
 
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {

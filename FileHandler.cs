@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -26,7 +27,7 @@ namespace BookStore
             try
             {
                 StreamWriter addWriter = File.AppendText(sourceFile);
-                addWriter.Write(currentBook.ToString());
+                addWriter.Write("\r\n" + currentBook.ToString());
                 addWriter.Close();
                 return true;
             }
@@ -56,6 +57,7 @@ namespace BookStore
                 else//What to do if we have invalid entry in txt file/data corruption
                 {
                     srEmployee.Close();
+                    MessageBox.Show("Employee file invalid data error.", "Data error");
                     return false;
                 }
             }
@@ -78,6 +80,41 @@ namespace BookStore
                 return false;
             }
         }
+
+        public static bool updateEmployeeFile(EmployeeList employeeInfoDB, string path) {
+
+            StreamWriter swEmployee = new StreamWriter(tempFile);
+            try
+            {
+                foreach (var employee in employeeInfoDB.GetList().Values)
+                {
+                    swEmployee.WriteLine((employee.ToString()));
+                   
+                }
+
+                swEmployee.Close();
+
+                File.Replace(tempFile, path, "employeeList.bak");
+                StringBuilder sb = new StringBuilder();
+
+                foreach (var employee in employeeInfoDB.GetList().Values)
+                {
+
+                    sb.Append(employee.ToString(true).Replace("|", "\r\n"));
+                    sb.Append("\r\n");
+                }
+
+                MessageBox.Show(sb.ToString(), "Updated Employee List");
+                return true;
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show("Error updating employee file" + e.ToString(),"File Error");
+                return false;
+            }
+        }
+
+
         //Handles searching the book file for the specified book, as well as deleting/updating files.
         //Flags are "delete"/"update". Add is handled with a boolean and then calling the addBook method.
         //Doing it this way prevents having to research search/scan the file for deleting/updating. 

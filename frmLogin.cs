@@ -38,34 +38,38 @@ namespace BookStore
         {
             
             int id;
-            if (!Regex.IsMatch(txtUserID.Text, @"^[0-9]{5}$")) {
+            if (!Regex.IsMatch(txtUserID.Text, @"^[0-9]{5}$"))
+            {
                 MessageBox.Show("Please enter your 5 digit User ID", "Invalid ID");
                 txtUserID.Focus();
                 attempts++;
             }
-            if(employeeInfoDB.DoesIdExist(txtUserID.Text))
+            else
             {
-                id = Convert.ToInt32(txtUserID.Text);
-                currentUser = employeeInfoDB.LookUpEmployee(id);
-                pnlUserLogin.Enabled = false;
-                pnlUserLogin.Visible = false;
-                pnlPasswordScreen.Enabled = true;
-                pnlPasswordScreen.Visible = true;
-                AcceptButton = btnPasswordEntry;
-                txtPassword.Focus();
-                attempts = 0;
-            }
-            else//Correct ID format, Invalid ID
-            {
-                MessageBox.Show("Please enter your 5 digit User ID", "Invalid ID");
-                attempts++;
-            }
-            if (attempts == 3)
-            {
-                MessageBox.Show("Too many incorrect tries, contact supervisor", "Incorrect ID");
-                btnUserIDEntry.Enabled = false;
-                txtUserID.Enabled = false;
-                return;
+                if (employeeInfoDB.DoesIdExist(txtUserID.Text))
+                {
+                    id = Convert.ToInt32(txtUserID.Text);
+                    currentUser = employeeInfoDB.LookUpEmployee(id);
+                    pnlUserLogin.Enabled = false;
+                    pnlUserLogin.Visible = false;
+                    pnlPasswordScreen.Enabled = true;
+                    pnlPasswordScreen.Visible = true;
+                    AcceptButton = btnPasswordEntry;
+                    txtPassword.Focus();
+                    attempts = 0;
+                }
+                else//Correct ID format, Invalid ID
+                {
+                    MessageBox.Show("Please enter your 5 digit User ID", "Invalid ID");
+                    attempts++;
+                }
+                if (attempts == 3)
+                {
+                    MessageBox.Show("Too many incorrect tries, contact supervisor", "Incorrect ID");
+                    btnUserIDEntry.Enabled = false;
+                    txtUserID.Enabled = false;
+                    return;
+                }
             }
         }
 
@@ -83,9 +87,12 @@ namespace BookStore
                 attempts = 0;
                 MessageBox.Show("Pin entered correctly", "Correct pin");
                 frmMain mainStorePage = new frmMain(currentUser, employeeInfoDB);
-                this.Hide();
-                mainStorePage.Show();
-
+                currentUser.LogAccess();
+                if (FileHandler.updateEmployeeFile(employeeInfoDB, employeeFile))
+                {
+                    this.Hide();
+                    mainStorePage.Show();
+                }
             }
             else
             {
