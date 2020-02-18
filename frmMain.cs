@@ -14,11 +14,22 @@ namespace BookStore
         Book currentBook;
         FileHandler fh;
         string[] validation = new string[] //String array of regex to validate user data
-                                           { @"^\d{3}(?:-\d{3})$", //ISBN (3 digits - 3 digits)
-                                             @"(.*?)", //Title (Matches any string)
-                                             @"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$", //Author(Start alphabetical, allow special character/space, end Alphabetical)
-                                             @"^[$]?(0|[1-9]\d*)(\.\d+)?$", //Price(Positive fractional or whole numbers, with period seperator)
-                                             @"^(0|[1-9]\d*)$"};//Number on hand(Positive whole numbers)
+        { @"^\d{3}(?:-\d{3})$", //ISBN (3 digits '-' 3 digits)
+            @"(.*?)", //Title (Matches any string)
+            @"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$", //Author(Start alphabetical, allow special character/space, end Alphabetical)
+            @"^[$]?(0|[1-9]\d*)(\.\d+)?$", //Price(Positive fractional or whole numbers, with period seperator)
+            @"^(0|[1-9]\d*)$"//Number on hand(Positive whole numbers)
+        };
+        string[] validationError = new string[]
+        {
+            "ISBN",
+            "Title",
+            "Author",
+            "Price",
+            "Number on hand",
+            "Date"
+        };
+        
         //Retrieve the currentUser and Employee List from form1. Initialize our file handler.
         public frmMain(Employee user, EmployeeList info)
         {
@@ -26,7 +37,6 @@ namespace BookStore
             currentUser = user;
             employeeInfo = info;
             fh = new FileHandler(bookFile);
-
         }
 
         //Greet user
@@ -42,12 +52,9 @@ namespace BookStore
                 MessageBox.Show("Invalid ISBN number, please re enter." + validation[0], "Invalid ISBN");
                 return;
             }
-
             if (fh.bookSearch(ref currentBook, txtISBNNumLookUp.Text))
             {
-
                 UpdateDisplayInfo(currentBook.BookInfo());
-
             }
             else//There was a problem with something, do stuff?
             {
@@ -57,7 +64,6 @@ namespace BookStore
        //Display relevant values in the textboxes at bottom of the form
         public void UpdateDisplayInfo(string[] info)
         {
-
             txtISBNNumInfo.Text = info[0];
             txtTitleInfo.Text = info[1];
             txtAuthorInfo.Text = info[2];
@@ -66,10 +72,12 @@ namespace BookStore
             txtDateInfo.Text = info[5];
         }
 
+        //Make sure all processes end when user exits form.
         private void btnExitSys_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
+        
         //Find a record and update it based on textboxes at bottom of form.
         private void btnUpdateBook_Click(object sender, EventArgs e)
         {
@@ -95,7 +103,7 @@ namespace BookStore
                 }
                 else//No or exited prompt.
                 {
-                    MessageBox.Show("Action cancled.", "Cancled");
+                    MessageBox.Show("Action canceled.", "Canceled");
                     return;
                 }
             }
@@ -113,15 +121,14 @@ namespace BookStore
             {
                 fh.updateFile();
                 MessageBox.Show("Book with ISBN: " + info[0] + " has been deleted.", "Succesful Delete");
-                info.ToList().ForEach(x => x = "");
             }
             else
             {
-                MessageBox.Show("Book with ISBN: " + info[0] + " was not deleted or didn't exist", "Action cancled");
+                MessageBox.Show("Book with ISBN: " + info[0] + " was not deleted or didn't exist", "Action canceled");
             }
 
         }
-        //I wish i put these text boxes on a panel so I didnt have to keep typing all of them out :[
+
         //Add a record to the file, if the ISBN already exists, don't add it.
         private void btnAddNew_Click(object sender, EventArgs e)
         {
@@ -155,7 +162,7 @@ namespace BookStore
                 }
                 else
                 {
-                    MessageBox.Show("Action cancled.", "Cancled");
+                    MessageBox.Show("Action canceled.", "Canceled");
                     return;
                 }
             }
@@ -206,7 +213,7 @@ namespace BookStore
                 {
                     if (!Regex.IsMatch(info[i], validation[i]))
                     {
-                        MessageBox.Show("Invalid data input, please recheck the fields at the bottom." + validation[i], "Data Error");
+                        MessageBox.Show(String.Format($"Invalid data input, please recheck the fields at the bottom. {validationError[i]} error.", "ISBN","Title"), "Data Error");
                         return false;
                     }
                 }

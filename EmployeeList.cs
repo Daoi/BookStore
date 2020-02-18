@@ -8,10 +8,10 @@ namespace BookStore
     {
         private Dictionary<int, Employee> employeeInfoDB = new Dictionary<int, Employee>();
 
-        //Get employee data file. Using temporary static file path for testing convenience 
         public EmployeeList()
         {
         }
+
         //Check for valid IDs
         public bool DoesIdExist(int id)
         {
@@ -21,7 +21,7 @@ namespace BookStore
         {
             return employeeInfoDB.ContainsKey(Convert.ToInt32(id));
         }
-
+        //Add employee to the list. 
         public void AddEmployee(Employee employee) 
         {
             employeeInfoDB[employee.getId()] = employee;
@@ -44,9 +44,5 @@ namespace BookStore
                 return null;
             }
         }
-
-
-
-
     }
 }

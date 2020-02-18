@@ -10,7 +10,7 @@ namespace BookStore
     public class FileHandler
     {
         private static string tempFile = Path.Combine(Path.GetTempPath(), "BSTempFile.txt");
-        private static string backUpFile = Path.Combine(Path.GetTempPath(), "BSBackUpFile.txt");
+        private static string backUpFile = "bookList.bak";
         private static string sourceFile = "bookList.txt";
         private static Book currentBook;
         private static StreamWriter sw;// new StreamWriter(tempFile);
@@ -89,7 +89,6 @@ namespace BookStore
                 foreach (var employee in employeeInfoDB.GetList().Values)
                 {
                     swEmployee.WriteLine((employee.ToString()));
-                   
                 }
 
                 swEmployee.Close();
@@ -99,8 +98,7 @@ namespace BookStore
 
                 foreach (var employee in employeeInfoDB.GetList().Values)
                 {
-
-                    sb.Append(employee.ToString(true).Replace("|", "\r\n"));
+                    sb.Append(employee.ToString(true));
                     sb.Append("\r\n");
                 }
 
@@ -168,20 +166,18 @@ namespace BookStore
                         {
                             this.writeLine(line);
                         }
-
-                }
+                    }
                     else//What to do if we have invalid entry in txt file/data corruption
                     {
                         MessageBox.Show("Inventory file has issue at ISBN: " + bookInfo[0], "Data Corruption");//Move to form code probably
                         return false;
                     }
-
                 }
             sr.Close();
             sw.Close();
             return found;
-
         }
+
         //Write lines to the temporary file
         public bool writeLine(string line)
         {

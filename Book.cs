@@ -35,7 +35,7 @@ namespace BookStore
             author = bookInfo[2];
             if (bookInfo[3].Contains("$"))
             {
-                bookInfo[3] = bookInfo[3].Replace("$", "0");
+                bookInfo[3] = bookInfo[3].Replace("$", "");
             }
             if (!Decimal.TryParse(bookInfo[3], out price) || Decimal.Parse(bookInfo[3]) <= 0)
             {
@@ -50,31 +50,23 @@ namespace BookStore
             if (!DateTime.TryParse(bookInfo[5], out lastTransaction))
             {
                 MessageBox.Show("Book list data invalid, ISBN: " + isbn + ". Transaction Date Error.", "Data Corruption");
-                lastTransaction = DateTime.Today;
+                lastTransaction = DateTime.Today.Date;
             }
-
         }
 
         //Put the strings properties in a single "line" for writing to a file.
         override public string ToString() {
             StringBuilder sb = new StringBuilder();
             string[] info = BookInfo();
-            if(info[3].Contains('$'))
+            if(info[3].Contains('$'))//Remove added dollar sign added to textbox used to display salary
             {
                 info[3] = info[3].Replace("$", "");
             }
             foreach(var value in info)
             {
-                if(value is string)
-                {
-                    sb.Append(value + '|');
-                }
-                else
-                {
-                    MessageBox.Show("I don't think this can happen", "I hope this can't happen");
-                }
+                sb.Append(value + '|');
             }
-            sb.Remove(sb.Length - 1, 1);
+            sb.Remove(sb.Length - 1, 1); //Remove last '|'
             return sb.ToString();
         }
         //Put the book's properties in a string array
@@ -92,13 +84,9 @@ namespace BookStore
            
         }
 
-        public static Boolean ValidateISBNFormat(string isbn)
+        public static bool ValidateISBNFormat(string isbn)
         {
             return Regex.IsMatch(isbn, @"^\d{3}(?:-\d{3})$");
         }
-
-
-
-
     }
 }

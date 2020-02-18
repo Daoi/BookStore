@@ -12,6 +12,7 @@ namespace BookStore
         EmployeeList employeeInfoDB = new EmployeeList();
         Employee currentUser;
         const string employeeFile = "employeeList.txt";
+        int attempts = 0;
 
         public frmUserIdPrompt()
         {
@@ -21,14 +22,22 @@ namespace BookStore
         //Load employee data on form load.
         private void frmUserIdPrompt_Load(object sender, EventArgs e)
         {
-            string filePath = Path.GetFullPath(employeeFile);
-            if (!FileHandler.ReadEmployeeFile(filePath, ref employeeInfoDB))
-            {//What to do if theres a problem
-
+            try
+            {
+                string filePath = Path.GetFullPath(employeeFile);
+                if (!FileHandler.ReadEmployeeFile(filePath, ref employeeInfoDB))
+                {
+                    MessageBox.Show("employeeList file unable to be opened or missing.", "File error");
+                    Application.Exit();
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("employeeList file error: " + ex.ToString(), "File error");
+                Application.Exit();
             }
 
         }
-        int attempts = 0;
 
         //Check for correct user name
         //This is a bit of a security flaw
@@ -77,20 +86,20 @@ namespace BookStore
         private void btnPasswordEntry_Click(object sender, EventArgs e)
         {
 
-            if ((!Regex.IsMatch(txtPassword.Text, @"^[0-9]{4}$"))) //Bad format
+            if ((!Regex.IsMatch(txtPassword.Text, @"^[0-9]{4}$"))) //Bad format - Doesn't count against attempts
             {
                 MessageBox.Show("Please enter your 4 digit pin", "Invalid Pin");
                 txtPassword.Focus();
             }
             else if (currentUser.getPin() == txtPassword.Text) //Succesful Login
             {
-                attempts = 0;
+                //attempts = 0;
                 MessageBox.Show("Pin entered correctly", "Correct pin");
                 frmMain mainStorePage = new frmMain(currentUser, employeeInfoDB);
                 currentUser.LogAccess();
                 if (FileHandler.updateEmployeeFile(employeeInfoDB, employeeFile))
                 {
-                    this.Hide();
+                    Hide();
                     mainStorePage.Show();
                 }
             }
@@ -100,13 +109,15 @@ namespace BookStore
                 txtPassword.Focus();
                 attempts++;
             }
+
             if (attempts == 3)
             {
-                MessageBox.Show("Too many incorrect tries, contact supervisor", "Incorrect pin");
+                MessageBox.Show("Too many incorrect tries, contact supervisor", "Incorrect ID");
                 btnPasswordEntry.Enabled = false;
                 txtPassword.Enabled = false;
                 return;
             }
+
         }
     }
 }
