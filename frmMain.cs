@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Linq;
+using System.Windows.Forms;d
 using System.Text.RegularExpressions;
 
 namespace BookStore
@@ -237,7 +236,7 @@ namespace BookStore
         {
             if (txtDateInfo.Text != DateTime.Today.ToString("MM/dd/yyyy"))
             {
-                DialogResult dr = MessageBox.Show("The last transaction date field doesn't have todays date." + "\r\n" + 
+                DialogResult dr = MessageBox.Show("The transaction date field doesn't have todays date." + "\r\n" + 
                     "Would you like to use todays date: " + DateTime.Today.ToString("MM/dd/yyyy") + "?",
                         "Update Date", MessageBoxButtons.YesNo);
                 if (dr == DialogResult.Yes)

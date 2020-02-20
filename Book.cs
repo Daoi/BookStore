@@ -8,7 +8,7 @@ namespace BookStore
 {
     //Models books, handles the creation of strings/storing info of a book record.
     public class Book
-    {
+    {   
         private string isbn;
         private string title;
         private string author;

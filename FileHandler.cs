@@ -64,7 +64,6 @@ namespace BookStore
 
             srEmployee.Close();
             return true;
-
         }
         //Copy our temp file to the location of our source file and over write. Also create a back up(Not really used atm.)
         public bool updateFile()
