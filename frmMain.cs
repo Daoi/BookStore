@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Forms;d
+using System.Windows.Forms;
 using System.Text.RegularExpressions;
 
 namespace BookStore
@@ -13,7 +13,8 @@ namespace BookStore
         Book currentBook;
         FileHandler fh;
         string[] validation = new string[] //String array of regex to validate user data
-        { @"^\d{3}(?:-\d{3})$", //ISBN (3 digits '-' 3 digits)
+        {
+            @"^\d{3}(?:-\d{3})$", //ISBN (3 digits '-' 3 digits)
             @"(.*?)", //Title (Matches any string)
             @"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$", //Author(Start alphabetical, allow special character/space, end Alphabetical)
             @"^[$]?(0|[1-9]\d*)(\.\d+)?$", //Price(Positive fractional or whole numbers, with period seperator)
@@ -210,7 +211,7 @@ namespace BookStore
             {
                 if (i < 5)
                 {
-                    if (!Regex.IsMatch(info[i], validation[i]))
+                    if (!Regex.IsMatch(info[i], validation[i]) || string.IsNullOrWhiteSpace(info[i]))
                     {
                         MessageBox.Show(String.Format($"Invalid data input, please recheck the fields at the bottom. {validationError[i]} error.", "ISBN","Title"), "Data Error");
                         return false;
@@ -224,7 +225,7 @@ namespace BookStore
                     }
                     catch
                     {
-                        MessageBox.Show("Invalid date input, please recheck the fields at the bottom.", "Data Error");
+                        MessageBox.Show($"Invalid date input, please recheck the fields at the bottom. {validationError[5]} error.", "Data Error");
                         return false;
                     }
                 }

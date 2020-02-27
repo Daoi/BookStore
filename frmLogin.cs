@@ -27,7 +27,7 @@ namespace BookStore
                 string filePath = Path.GetFullPath(employeeFile);
                 if (!FileHandler.ReadEmployeeFile(filePath, ref employeeInfoDB))
                 {
-                    MessageBox.Show("employeeList file unable to be opened or missing.", "File error");
+                    MessageBox.Show("employeeList file unable to be read or opened.", "File error");
                     Application.Exit();
                 }
             }

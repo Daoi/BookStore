@@ -26,9 +26,9 @@ namespace BookStore
         {
             try
             {
-                StreamWriter addWriter = File.AppendText(sourceFile);
-                addWriter.Write("\r\n" + currentBook.ToString());
-                addWriter.Close();
+                sw = File.AppendText(sourceFile);
+                sw.Write("\r\n" + currentBook.ToString());//
+                sw.Close();
                 return true;
             }
             catch(Exception e)
@@ -41,9 +41,9 @@ namespace BookStore
         //Read the employee file and create the list(Dictionary) of employees. Key = User ID, Value = Employee object. No search needed.
         public static bool ReadEmployeeFile(string path, ref EmployeeList employeeInfoDB)
         {
-            StreamReader srEmployee = new StreamReader(path);
+            sr = new StreamReader(path);
             string line;
-            while ((line = srEmployee.ReadLine()) != null)
+            while ((line = sr.ReadLine()) != null)
             {
                 string[] employeeInfo = line.Split('|');
                 //User ID Validation(Doesn't exist, is in right format)
@@ -56,13 +56,13 @@ namespace BookStore
                 }
                 else//What to do if we have invalid entry in txt file/data corruption
                 {
-                    srEmployee.Close();
+                    sr.Close();
                     MessageBox.Show("Employee file invalid data error.", "Data error");
                     return false;
                 }
             }
 
-            srEmployee.Close();
+            sr.Close();
             return true;
         }
         //Copy our temp file to the location of our source file and over write. Also create a back up(Not really used atm.)
@@ -82,15 +82,15 @@ namespace BookStore
 
         public static bool updateEmployeeFile(EmployeeList employeeInfoDB, string path) {
 
-            StreamWriter swEmployee = new StreamWriter(tempFile);
+                sw = new StreamWriter(tempFile);
             try
             {
                 foreach (var employee in employeeInfoDB.GetList().Values)
                 {
-                    swEmployee.WriteLine((employee.ToString()));
+                    sw.WriteLine((employee.ToString()));
                 }
 
-                swEmployee.Close();
+                sw.Close();
 
                 File.Replace(tempFile, path, "employeeList.bak");
                 StringBuilder sb = new StringBuilder();
@@ -106,6 +106,7 @@ namespace BookStore
             }
             catch(Exception e)
             {
+                sw.Close();
                 MessageBox.Show("Error updating employee file" + e.ToString(),"File Error");
                 return false;
             }
@@ -114,7 +115,7 @@ namespace BookStore
 
         //Handles searching the book file for the specified book, as well as deleting/updating files.
         //Flags are "delete"/"update". Add is handled with a boolean and then calling the addBook method.
-        //Doing it this way prevents having to research search/scan the file for deleting/updating. 
+        //Doing it this way prevents having to search/scan the file for deleting/updating. 
         //While you could do delete/update in similar ways it revolves around constantly keeping track
         //of the Reader/Writer which I feel is more difficult to follow than this method.
         //Howevevr, this method does kind of do a lot and is a pain to read through.
@@ -137,7 +138,7 @@ namespace BookStore
                         {
                             book = new Book(bookInfo);
                             found = true;
-                            writeLine(line);
+                            //sw.WriteLine(line);
                         }
                         else if(bookInfo[0] == isbn && flag == "delete")//Record found, delete it? If yes, just skip writing.
                         {
@@ -152,18 +153,18 @@ namespace BookStore
                             else//They dont want to delete a book/this book, so write it. 
                             //Technically not needed since in this case the source file shouldnt be overwritten. Helps illustrate whats going on though maybe.
                             {
-                                writeLine(line);
+                                sw.WriteLine(line);
                             }
                             
                         }
                         else if (bookInfo[0] == isbn && flag == "update")//Update a record
                         {
-                            writeLine(currentBook.ToString());
+                            sw.WriteLine(currentBook.ToString());
                             found = true;
                         }
                         else//This book doesn't match the book being searched for, safe to just write it.
                         {
-                            this.writeLine(line);
+                            sw.WriteLine(line);
                         }
                     }
                     else//What to do if we have invalid entry in txt file/data corruption
@@ -176,22 +177,5 @@ namespace BookStore
             sw.Close();
             return found;
         }
-
-        //Write lines to the temporary file
-        public bool writeLine(string line)
-        {
-            try
-            {
-                sw.WriteLine(line);
-                return true;
-            }
-            catch(Exception e)
-            {
-                MessageBox.Show(e.ToString(), "Line Write Error");
-                return false;
-            }
-        }
-
-
     }
 }
