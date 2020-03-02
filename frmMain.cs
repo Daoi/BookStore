@@ -7,6 +7,7 @@ namespace BookStore
     //The "Main" form. Handles all the actions related to books. Search/Add/Delete/Update a record. Display relevant info.
     public partial class frmMain : Form
     {
+        private static char lastAction;
         const string bookFile = "bookList.txt";
         Employee currentUser;
         EmployeeList employeeInfo;
@@ -93,6 +94,7 @@ namespace BookStore
                     string updatedInfo = updateBook.ToString();
                     if (fh.bookSearch(ref updateBook, info[0], "update"))
                     {
+                        lastAction = 'u';
                         fh.UpdateFile();
                         MessageBox.Show("The book has been succesfully updated.", "Success!");
                     }
@@ -122,6 +124,7 @@ namespace BookStore
                 fh.UpdateFile();
                 MessageBox.Show("Book with ISBN: " + info[0] + " has been deleted.", "Succesful Delete");
                 ClearFields();
+                lastAction = 'd';
             }
             else
             {
@@ -146,7 +149,7 @@ namespace BookStore
                     {
                         if (fh.addBook(addBook.ToString()))
                         {
-
+                            lastAction = 'a';
                             MessageBox.Show("The book has been succesfully added.", "Success!");
                         }
                         else
@@ -267,6 +270,11 @@ namespace BookStore
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        public static char getLastAction()
+        {
+            return lastAction;
         }
 
 

@@ -21,14 +21,41 @@ namespace BookStore
             sourceFile = path;
 
         }
-        //Append the line to the end of the bookList file to add a new book. Nothing complicated needed.
+        //Remove empty lines from the file.
+        public void RemoveEmptyLines()
+        {
+            try
+            {
+                using (sr = new StreamReader(sourceFile))
+                using (sw = new StreamWriter(tempFile))
+                {
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            sw.WriteLine(line);
+                        }
+                    }
+                }
+                File.Copy(tempFile, sourceFile, true);
+            }
+            finally
+            {
+                File.Delete(tempFile);
+            }
+        }
+
+        //Append the line to the end of the bookList file to add a new book.
         public bool addBook(string line)
         {
             try
             {
-                sw = File.AppendText(sourceFile);
-                sw.Write("\r\n" + currentBook.ToString());
-                sw.Close();
+                using (sw = File.AppendText(sourceFile))
+                {
+                    sw.Write("\r\n" + currentBook.ToString());
+                }
+                RemoveEmptyLines();
                 return true;
             }
             catch(Exception e)
@@ -67,11 +94,11 @@ namespace BookStore
         }
         //Copy our temp file to the location of our source file and over write. Also create a back up(Not really used atm.)
         public bool UpdateFile()
-        {
-                
+        {     
             try
             {
                 File.Replace(tempFile, sourceFile, backUpFile);
+                RemoveEmptyLines();
                 return true;
             }
             catch(Exception e)
@@ -79,11 +106,6 @@ namespace BookStore
                 MessageBox.Show(e.ToString(), "File Error");
                 return false;
             }
-        }
-
-        public void RemoveBlankLines()
-        {
-
         }
 
         public static bool updateEmployeeFile(EmployeeList employeeInfoDB, string path) {
@@ -168,7 +190,9 @@ namespace BookStore
                         else//This book doesn't match the book being searched for, safe to just write it.
                         {
                             if (!string.IsNullOrWhiteSpace(line))
+                            {
                                 sw.WriteLine(line);
+                            }
                         }
                     }
                     else//What to do if we have invalid entry in txt file/data corruption
@@ -179,7 +203,7 @@ namespace BookStore
                                 return false;
                         }
                     }
-                }
+            }
             sr.Close();
             sw.Close();
             return found;
