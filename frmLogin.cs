@@ -107,6 +107,7 @@ namespace BookStore
             {
                 MessageBox.Show("Invalid pin", "Incorrect pin"); //Bad pin
                 txtPassword.Focus();
+                txtPassword.Text = "";
                 attempts++;
             }
 

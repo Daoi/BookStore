@@ -52,6 +52,8 @@
             this.txtDateInfo = new System.Windows.Forms.TextBox();
             this.btnExitSys = new System.Windows.Forms.Button();
             this.txtISBNNumInfo = new System.Windows.Forms.MaskedTextBox();
+            this.lblIstructions = new System.Windows.Forms.Label();
+            this.btnClear = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblHeader
@@ -80,7 +82,7 @@
             // 
             this.txtISBNNumLookUp.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtISBNNumLookUp.Location = new System.Drawing.Point(503, 112);
-            this.txtISBNNumLookUp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtISBNNumLookUp.Margin = new System.Windows.Forms.Padding(4);
             this.txtISBNNumLookUp.Mask = "000-000";
             this.txtISBNNumLookUp.Name = "txtISBNNumLookUp";
             this.txtISBNNumLookUp.Size = new System.Drawing.Size(115, 34);
@@ -90,7 +92,7 @@
             // btnISBNSearch
             // 
             this.btnISBNSearch.Location = new System.Drawing.Point(641, 113);
-            this.btnISBNSearch.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnISBNSearch.Margin = new System.Windows.Forms.Padding(4);
             this.btnISBNSearch.Name = "btnISBNSearch";
             this.btnISBNSearch.Size = new System.Drawing.Size(100, 28);
             this.btnISBNSearch.TabIndex = 5;
@@ -124,7 +126,7 @@
             // 
             this.btnAddNew.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAddNew.Location = new System.Drawing.Point(376, 212);
-            this.btnAddNew.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnAddNew.Margin = new System.Windows.Forms.Padding(4);
             this.btnAddNew.Name = "btnAddNew";
             this.btnAddNew.Size = new System.Drawing.Size(356, 44);
             this.btnAddNew.TabIndex = 8;
@@ -136,7 +138,7 @@
             // 
             this.btnUpdateBook.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUpdateBook.Location = new System.Drawing.Point(376, 265);
-            this.btnUpdateBook.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnUpdateBook.Margin = new System.Windows.Forms.Padding(4);
             this.btnUpdateBook.Name = "btnUpdateBook";
             this.btnUpdateBook.Size = new System.Drawing.Size(356, 44);
             this.btnUpdateBook.TabIndex = 9;
@@ -148,7 +150,7 @@
             // 
             this.btnDeleteBook.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDeleteBook.Location = new System.Drawing.Point(376, 318);
-            this.btnDeleteBook.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnDeleteBook.Margin = new System.Windows.Forms.Padding(4);
             this.btnDeleteBook.Name = "btnDeleteBook";
             this.btnDeleteBook.Size = new System.Drawing.Size(356, 44);
             this.btnDeleteBook.TabIndex = 10;
@@ -160,7 +162,7 @@
             // 
             this.lblCurrentBook.AutoSize = true;
             this.lblCurrentBook.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCurrentBook.Location = new System.Drawing.Point(97, 442);
+            this.lblCurrentBook.Location = new System.Drawing.Point(64, 441);
             this.lblCurrentBook.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblCurrentBook.Name = "lblCurrentBook";
             this.lblCurrentBook.Size = new System.Drawing.Size(205, 29);
@@ -237,7 +239,7 @@
             // 
             this.txtTitleInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTitleInfo.Location = new System.Drawing.Point(167, 554);
-            this.txtTitleInfo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtTitleInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtTitleInfo.Name = "txtTitleInfo";
             this.txtTitleInfo.Size = new System.Drawing.Size(327, 26);
             this.txtTitleInfo.TabIndex = 18;
@@ -245,7 +247,7 @@
             // txtAuthorInfo
             // 
             this.txtAuthorInfo.Location = new System.Drawing.Point(167, 597);
-            this.txtAuthorInfo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtAuthorInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtAuthorInfo.Name = "txtAuthorInfo";
             this.txtAuthorInfo.Size = new System.Drawing.Size(327, 22);
             this.txtAuthorInfo.TabIndex = 19;
@@ -253,23 +255,23 @@
             // txtOnHandInfo
             // 
             this.txtOnHandInfo.Location = new System.Drawing.Point(736, 556);
-            this.txtOnHandInfo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtOnHandInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtOnHandInfo.Name = "txtOnHandInfo";
             this.txtOnHandInfo.Size = new System.Drawing.Size(132, 22);
-            this.txtOnHandInfo.TabIndex = 21;
+            this.txtOnHandInfo.TabIndex = 22;
             // 
             // txtPriceInfo
             // 
             this.txtPriceInfo.Location = new System.Drawing.Point(736, 517);
-            this.txtPriceInfo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtPriceInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtPriceInfo.Name = "txtPriceInfo";
             this.txtPriceInfo.Size = new System.Drawing.Size(132, 22);
-            this.txtPriceInfo.TabIndex = 23;
+            this.txtPriceInfo.TabIndex = 21;
             // 
             // txtDateInfo
             // 
             this.txtDateInfo.Location = new System.Drawing.Point(736, 597);
-            this.txtDateInfo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtDateInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtDateInfo.Name = "txtDateInfo";
             this.txtDateInfo.Size = new System.Drawing.Size(132, 22);
             this.txtDateInfo.TabIndex = 24;
@@ -278,10 +280,10 @@
             // 
             this.btnExitSys.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExitSys.Location = new System.Drawing.Point(448, 660);
-            this.btnExitSys.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnExitSys.Margin = new System.Windows.Forms.Padding(4);
             this.btnExitSys.Name = "btnExitSys";
             this.btnExitSys.Size = new System.Drawing.Size(100, 32);
-            this.btnExitSys.TabIndex = 25;
+            this.btnExitSys.TabIndex = 27;
             this.btnExitSys.Text = "Exit";
             this.btnExitSys.UseVisualStyleBackColor = true;
             this.btnExitSys.Click += new System.EventHandler(this.btnExitSys_Click);
@@ -290,18 +292,43 @@
             // 
             this.txtISBNNumInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtISBNNumInfo.Location = new System.Drawing.Point(167, 506);
-            this.txtISBNNumInfo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtISBNNumInfo.Margin = new System.Windows.Forms.Padding(4);
             this.txtISBNNumInfo.Mask = "000-000";
             this.txtISBNNumInfo.Name = "txtISBNNumInfo";
             this.txtISBNNumInfo.Size = new System.Drawing.Size(72, 26);
             this.txtISBNNumInfo.TabIndex = 17;
             this.txtISBNNumInfo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtISBNNumInfo_KeyDown);
             // 
+            // lblIstructions
+            // 
+            this.lblIstructions.AutoSize = true;
+            this.lblIstructions.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblIstructions.Location = new System.Drawing.Point(755, 212);
+            this.lblIstructions.Name = "lblIstructions";
+            this.lblIstructions.Size = new System.Drawing.Size(314, 80);
+            this.lblIstructions.TabIndex = 26;
+            this.lblIstructions.Text = "Instructions: Add a book, Update a book, \r\nor Delete a book using the fields in t" +
+    "he\r\nsection below. Deleting only requires the\r\nISBN of the book you wish to dele" +
+    "te.";
+            // 
+            // btnClear
+            // 
+            this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClear.Location = new System.Drawing.Point(69, 660);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(118, 32);
+            this.btnClear.TabIndex = 25;
+            this.btnClear.Text = "Clear Info";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1132, 769);
+            this.Controls.Add(this.btnClear);
+            this.Controls.Add(this.lblIstructions);
             this.Controls.Add(this.btnExitSys);
             this.Controls.Add(this.txtDateInfo);
             this.Controls.Add(this.txtPriceInfo);
@@ -325,7 +352,7 @@
             this.Controls.Add(this.txtISBNNumLookUp);
             this.Controls.Add(this.lblISBN);
             this.Controls.Add(this.lblHeader);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmMain";
             this.Text = "Form2";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMain_FormClosed);
@@ -361,5 +388,7 @@
         private System.Windows.Forms.TextBox txtDateInfo;
         private System.Windows.Forms.Button btnExitSys;
         private System.Windows.Forms.MaskedTextBox txtISBNNumInfo;
+        private System.Windows.Forms.Label lblIstructions;
+        private System.Windows.Forms.Button btnClear;
     }
 }

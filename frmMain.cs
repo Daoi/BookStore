@@ -56,9 +56,9 @@ namespace BookStore
             {
                 UpdateDisplayInfo(currentBook.BookInfo());
             }
-            else//There was a problem with something, do stuff?
+            else//Cant find ISBN number
             {
-                MessageBox.Show("ISBN not valid or file corrupted", "File Error");
+                MessageBox.Show("ISBN not found", "ISBN Error");
             }
         }
        //Display relevant values in the textboxes at bottom of the form
@@ -81,7 +81,7 @@ namespace BookStore
         //Find a record and update it based on textboxes at bottom of form.
         private void btnUpdateBook_Click(object sender, EventArgs e)
         {
-            updateDate();
+            UpdateDate();
             string[] info = getInfo();
             if (validateInfo())
             {
@@ -93,7 +93,7 @@ namespace BookStore
                     string updatedInfo = updateBook.ToString();
                     if (fh.bookSearch(ref updateBook, info[0], "update"))
                     {
-                        fh.updateFile();
+                        fh.UpdateFile();
                         MessageBox.Show("The book has been succesfully updated.", "Success!");
                     }
                     else
@@ -119,8 +119,9 @@ namespace BookStore
             }
             if (fh.bookSearch(ref deleteBook, info[0], "delete"))
             {
-                fh.updateFile();
+                fh.UpdateFile();
                 MessageBox.Show("Book with ISBN: " + info[0] + " has been deleted.", "Succesful Delete");
+                ClearFields();
             }
             else
             {
@@ -132,7 +133,7 @@ namespace BookStore
         //Add a record to the file, if the ISBN already exists, don't add it.
         private void btnAddNew_Click(object sender, EventArgs e)
         {
-            updateDate();
+            UpdateDate();
             string[] info = getInfo();
             if (validateInfo())
             {
@@ -233,7 +234,7 @@ namespace BookStore
             return true;
         }
 
-        private void updateDate()
+        private void UpdateDate()
         {
             if (txtDateInfo.Text != DateTime.Today.ToString("MM/dd/yyyy"))
             {
@@ -247,10 +248,27 @@ namespace BookStore
             }
         }
 
+        private void ClearFields()
+        {
+            txtISBNNumInfo.Text = "";
+            txtTitleInfo.Text = "";
+            txtAuthorInfo.Text = "";
+            txtPriceInfo.Text = "";
+            txtOnHandInfo.Text = "";
+            txtDateInfo.Text = "";
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            ClearFields();
+        }
+
 
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
         }
+
+
     }
 }

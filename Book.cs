@@ -44,7 +44,7 @@ namespace BookStore
             }
             if (!int.TryParse(bookInfo[4], out numberOnHand) || int.Parse(bookInfo[4]) < 0)
             {
-                MessageBox.Show("Book list data invalid, ISBN: " + isbn + ". Inventory Count Error. Recount and Update.", "Data Corruption");
+                MessageBox.Show("Book list data invalid, ISBN: " + isbn + ". Inventory Count Error. Recount and Update record.", "Data Corruption");
                 numberOnHand = 0;
             }
             if (!DateTime.TryParse(bookInfo[5], out lastTransaction))

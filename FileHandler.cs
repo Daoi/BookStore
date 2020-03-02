@@ -27,7 +27,7 @@ namespace BookStore
             try
             {
                 sw = File.AppendText(sourceFile);
-                sw.Write("\r\n" + currentBook.ToString());//
+                sw.Write("\r\n" + currentBook.ToString());
                 sw.Close();
                 return true;
             }
@@ -66,8 +66,9 @@ namespace BookStore
             return true;
         }
         //Copy our temp file to the location of our source file and over write. Also create a back up(Not really used atm.)
-        public bool updateFile()
+        public bool UpdateFile()
         {
+                
             try
             {
                 File.Replace(tempFile, sourceFile, backUpFile);
@@ -75,9 +76,14 @@ namespace BookStore
             }
             catch(Exception e)
             {
-                MessageBox.Show(e.ToString(), "File failure");
+                MessageBox.Show(e.ToString(), "File Error");
                 return false;
             }
+        }
+
+        public void RemoveBlankLines()
+        {
+
         }
 
         public static bool updateEmployeeFile(EmployeeList employeeInfoDB, string path) {
@@ -115,10 +121,10 @@ namespace BookStore
 
         //Handles searching the book file for the specified book, as well as deleting/updating files.
         //Flags are "delete"/"update". Add is handled with a boolean and then calling the addBook method.
-        //Doing it this way prevents having to search/scan the file for deleting/updating. 
+        //Doing it this way prevents having to re-search/scan the file for deleting/updating. 
         //While you could do delete/update in similar ways it revolves around constantly keeping track
         //of the Reader/Writer which I feel is more difficult to follow than this method.
-        //Howevevr, this method does kind of do a lot and is a pain to read through.
+        //However, this method does kind of do a lot and is a pain to read through.
         public bool bookSearch(ref Book book, string isbn, string flag = "")
         {
             sw = new StreamWriter(tempFile);
@@ -134,11 +140,13 @@ namespace BookStore
                     //ISBN ID Validatio(Two groups of 3 digits delimited by hyphen)
                     if (Book.ValidateISBNFormat(bookInfo[0]))
                     {
-                        if (bookInfo[0] == isbn && flag == "")//Just a search, return the book that was being looked for.
+                        if (bookInfo[0] == isbn && flag == "")//Just a search, return the book that was being looked for/dont modify file
                         {
                             book = new Book(bookInfo);
                             found = true;
-                            //sw.WriteLine(line);
+                            sw.Close();
+                            sr.Close();
+                            return found;
                         }
                         else if(bookInfo[0] == isbn && flag == "delete")//Record found, delete it? If yes, just skip writing.
                         {
@@ -150,11 +158,6 @@ namespace BookStore
                             {
                                 found = true;
                             }
-                            else//They dont want to delete a book/this book, so write it. 
-                            //Technically not needed since in this case the source file shouldnt be overwritten. Helps illustrate whats going on though maybe.
-                            {
-                                sw.WriteLine(line);
-                            }
                             
                         }
                         else if (bookInfo[0] == isbn && flag == "update")//Update a record
@@ -164,13 +167,17 @@ namespace BookStore
                         }
                         else//This book doesn't match the book being searched for, safe to just write it.
                         {
-                            sw.WriteLine(line);
+                            if (!string.IsNullOrWhiteSpace(line))
+                                sw.WriteLine(line);
                         }
                     }
                     else//What to do if we have invalid entry in txt file/data corruption
                     {
-                        MessageBox.Show("Inventory file has issue at ISBN: " + bookInfo[0], "Data Corruption");//Move to form code probably
-                        return false;
+                        if (!string.IsNullOrEmpty(line)) {
+                            MessageBox.Show("Inventory file has issue at ISBN: " + bookInfo[0], 
+                                "Data Corruption");//Move to form code probably
+                                return false;
+                        }
                     }
                 }
             sr.Close();
